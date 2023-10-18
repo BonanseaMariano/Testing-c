@@ -29,9 +29,7 @@ void agregarProducto(FILE *archivo) {
 void listarProductos(FILE *archivo) {
     Producto producto;
     int i=1; //Contador para la lista de productos
-    
-    // Me muevo al principio del archivo
-    fseek(archivo, 0, SEEK_SET);
+    rewind(archivo);//Reinicio el cursor del archivo
 
     //Impresion cuando el archivo se encuentra vacio
     if (!fread(&producto, sizeof(Producto), 1, archivo))
@@ -55,6 +53,7 @@ void listarProductos(FILE *archivo) {
 void buscarProducto(FILE *archivo) {
     int id;
     Producto producto;
+    rewind(archivo);//Reinicio el cursor del archivo
 
     printf("Ingrese el ID del producto que desea buscar: ");
     scanf("%d", &id);
@@ -94,7 +93,8 @@ int main() {
         printf("2. Listar todos los productos.\n");
         printf("3. Buscar un producto por su ID.\n");
         printf("4. Eliminar Archivo.\n");
-        printf("5. Salir.\n");
+        printf("5. Limpiar consola.\n");
+        printf("6. Salir.\n");
         printf("\nIngrese una opcion: ");
         scanf("%d", &opcion);
         printf("\n");
@@ -120,12 +120,15 @@ int main() {
                 }
                 break;
             case 5:
+                system("clear");
+                break;
+            case 6:
                 break;
             default:
-                printf("\nOpción inválida.\n");
+                printf("\nOpcion invalida.\n");
                 break;
         }
-    } while (opcion != 5);
+    } while (opcion != 6);
     fclose(archivo);
 
     return 0;

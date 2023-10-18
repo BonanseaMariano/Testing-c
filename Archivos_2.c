@@ -29,7 +29,8 @@ void agregarEstudiante(FILE *archivo) {
 void listarEstudiantes(FILE *archivo) {
     Estudiante estudiante;
     int i=1; //Contador para la lista de estudiantes
-    
+    rewind(archivo);//Reinicio el cursor del archivo
+
     //Impresion cuando el archivo se encuentra vacio
     if (!fread(&estudiante, sizeof(Estudiante), 1, archivo))
     {
@@ -52,6 +53,7 @@ void listarEstudiantes(FILE *archivo) {
 void buscarEstudiante(FILE *archivo) {
     int matricula;
     Estudiante estudiante;
+    rewind(archivo);//Reinicio el cursor del archivo
 
     printf("Ingrese la matricula del estudiante que desea buscar: ");
     scanf("%d", &matricula);
@@ -75,55 +77,61 @@ int main() {
     FILE *archivo;
     int opcion;
 
-    //Tengo que abrir y cerrar el archivo en cada operacion que hago para que se actualice entre operaciones
-    do {
-        //Abro el archivo en modo lectura/escritura
-        //"ab+" se utiliza para abrir un archivo binario en modo de escritura y lectura, y para agregar nuevos datos al final del archivo si ya existe.
-        archivo = fopen("estudiantes.bin", "ab+");
-        
-        //Errores al abrir el archivo
-        if (archivo == NULL) {
-            printf("Error al abrir el archivo.\n");
-            return 1;
-        }
+    //Abro el archivo en modo lectura/escritura
+    //"ab+" se utiliza para abrir un archivo binario en modo de escritura y lectura, y para agregar nuevos datos al final del archivo si ya existe.
+    archivo = fopen("estudiantes.bin", "ab+");
+    
+    //Errores al abrir el archivo
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return 1;
+    }
 
+    do {
+        
         printf("\n\t--- Menu de opciones: ----\n");
         printf("1. Agregar un nuevo estudiante.\n");
-        printf("2. Listar todos los productos.\n");
-        printf("3. Buscar un estudiante por su ID.\n");
+        printf("2. Listar todos los estudiantes.\n");
+        printf("3. Buscar un estudiante por su matricula.\n");
         printf("4. Eliminar Archivo.\n");
-        printf("5. Salir.\n");
+        printf("5. Limpiar consola.\n");
+        printf("6. Salir.\n");
 
         printf("\nIngrese una opcion: ");
         scanf("%d", &opcion);
         printf("\n");
 
-        //En todos los casos hay que acordarse de cerrar el archivo al final (incluso al salir del programa)
         switch (opcion) {
             case 1:
                 agregarEstudiante(archivo);
-                fclose(archivo);
                 break;
             case 2:
                 listarEstudiantes(archivo);
-                fclose(archivo);
                 break;
             case 3:
                 buscarEstudiante(archivo);
-                fclose(archivo);
                 break;
             case 4:
-                fclose(archivo);
+                fclose(archivo); //cierro el archivo primero para desp poder borrarlo
                 remove("estudiantes.bin"); //Borro el archivo y desp se crea denuevo pero vacio
+                //Abro denuevo el archivo
+                archivo = fopen("estudiantes.bin", "ab+");
+                if (archivo == NULL) {
+                    printf("Error al abrir el archivo.\n");
+                    return 1;
+                }
                 break;
             case 5:
-                fclose(archivo);
+                system("clear");
+                break;
+            case 6:
                 break;
             default:
-                printf("\nOpción inválida.\n");
+                printf("\nOpcion invalida.\n");
                 break;
         }
-    } while (opcion != 5);
+    } while (opcion != 6);
+    fclose(archivo);
 
     return 0;
 }
