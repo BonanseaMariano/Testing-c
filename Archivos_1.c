@@ -30,6 +30,9 @@ void listarProductos(FILE *archivo) {
     Producto producto;
     int i=1; //Contador para la lista de productos
     
+    // Me muevo al principio del archivo
+    fseek(archivo, 0, SEEK_SET);
+
     //Impresion cuando el archivo se encuentra vacio
     if (!fread(&producto, sizeof(Producto), 1, archivo))
     {
@@ -74,55 +77,56 @@ int main() {
     FILE *archivo;
     int opcion;
 
-    //Tengo que abrir y cerrar el archivo en cada operacion que hago para que se actualice entre operaciones
-    do {
-        //Abro el archivo en modo lectura/escritura
-        //"ab+" se utiliza para abrir un archivo binario en modo de escritura y lectura, y para agregar nuevos datos al final del archivo si ya existe.
-        archivo = fopen("productos.bin", "ab+");
-        
-        //Errores al abrir el archivo
-        if (archivo == NULL) {
-            printf("Error al abrir el archivo.\n");
-            return 1;
-        }
+    //Abro el archivo en modo lectura/escritura
+    //"ab+" se utiliza para abrir un archivo binario en modo de escritura y lectura, y para agregar nuevos datos al final del archivo si ya existe.
+    archivo = fopen("productos.bin", "ab+");
+    
+    //Errores al abrir el archivo
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo.\n");
+        return 1;
+    }
 
-        printf("\nMenu:\n");
+    do {
+
+        printf("\n\t---- Menu de opciones: ----\n");
         printf("1. Agregar un nuevo producto.\n");
         printf("2. Listar todos los productos.\n");
         printf("3. Buscar un producto por su ID.\n");
         printf("4. Eliminar Archivo.\n");
         printf("5. Salir.\n");
-
         printf("\nIngrese una opcion: ");
         scanf("%d", &opcion);
         printf("\n");
 
-        //En todos los casos hay que acordarse de cerrar el archivo al final (incluso al salir del programa)
         switch (opcion) {
             case 1:
                 agregarProducto(archivo);
-                fclose(archivo);
                 break;
             case 2:
                 listarProductos(archivo);
-                fclose(archivo);
                 break;
             case 3:
                 buscarProducto(archivo);
-                fclose(archivo);
                 break;
             case 4:
-                fclose(archivo);
+                fclose(archivo); //Tiene que estar cerrado para poder borrarlo
                 remove("productos.bin"); //Borro el archivo y desp se crea denuevo pero vacio
+                //Abro denuevo el archivo
+                archivo = fopen("productos.bin", "ab+");
+                if (archivo == NULL) {
+                    printf("Error al abrir el archivo.\n");
+                    return 1;
+                }
                 break;
             case 5:
-                fclose(archivo);
                 break;
             default:
                 printf("\nOpción inválida.\n");
                 break;
         }
     } while (opcion != 5);
+    fclose(archivo);
 
     return 0;
 }
