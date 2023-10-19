@@ -86,8 +86,9 @@ int main() {
     
     //Errores al abrir el archivo
     if (archivo == NULL) {
-        printf("Error al abrir el archivo.\n");
-        return 1;
+        archivo = fopen("estudiantes.bin", "w");
+        fclose(archivo);
+        archivo = fopen("estudiantes.bin", "rb+");
     }
 
     do {
@@ -120,8 +121,9 @@ int main() {
                 //Abro denuevo el archivo
                 archivo = fopen("estudiantes.bin", "rb+");
                 if (archivo == NULL) {
-                    printf("Error al abrir el archivo.\n");
-                    return 1;
+                    archivo = fopen("estudiantes.bin", "w");
+                    fclose(archivo);
+                    archivo = fopen("estudiantes.bin", "rb+");
                 }
                 break;
             case 5:
