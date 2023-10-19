@@ -52,6 +52,7 @@ void listarEstudiantes(FILE *archivo) {
 //----------------BUSCAR ESTUDIANTE-------------
 void buscarEstudiante(FILE *archivo) {
     int matricula;
+    int i=0; //Contador para la lista de estudiantes
     Estudiante estudiante;
     rewind(archivo);//Reinicio el cursor del archivo
 
@@ -64,9 +65,11 @@ void buscarEstudiante(FILE *archivo) {
             printf("\t------- %s ------\n",estudiante.nombre);
             printf("ID: %d\n", estudiante.matricula);
             printf("Prom: %.2f\n\n", estudiante.Prom);
+            fseek(archivo,sizeof(estudiante)*i,SEEK_SET); //Para posicionar el cursor una posicion antes
             agregarEstudiante(archivo);           
             return;
         }
+        i++;
     }
 
     printf("\tX No se encontro ningun estudiante con la matricula ingresada X\n");
@@ -79,7 +82,7 @@ int main() {
 
     //Abro el archivo en modo lectura/escritura
     //"ab+" se utiliza para abrir un archivo binario en modo de escritura y lectura, y para agregar nuevos datos al final del archivo si ya existe.
-    archivo = fopen("estudiantes.bin", "ab+");
+    archivo = fopen("estudiantes.bin", "rb+");
     
     //Errores al abrir el archivo
     if (archivo == NULL) {
@@ -115,7 +118,7 @@ int main() {
                 fclose(archivo); //cierro el archivo primero para desp poder borrarlo
                 remove("estudiantes.bin"); //Borro el archivo y desp se crea denuevo pero vacio
                 //Abro denuevo el archivo
-                archivo = fopen("estudiantes.bin", "ab+");
+                archivo = fopen("estudiantes.bin", "rb+");
                 if (archivo == NULL) {
                     printf("Error al abrir el archivo.\n");
                     return 1;
